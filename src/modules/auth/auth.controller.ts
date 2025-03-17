@@ -1,8 +1,10 @@
-import { Body, Controller, Get, HttpCode, InternalServerErrorException, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, InternalServerErrorException, Patch, Post, Put, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response, Request } from "express"
 import { RegistrationDto } from './dtos/Registration.dto';
 import { LoginDto } from './dtos/Login.dto';
+import { ForgotPasswordDto } from './dtos/ForgotPassword.dto';
+import { ResetPasswordDto } from './dtos/ResetPassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +36,18 @@ export class AuthController {
     } catch (error) {
       throw new InternalServerErrorException("Непередбачувана помилка")
     }
+  }
+
+  @HttpCode(200)
+  @Put("forgot-password")
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.authService.forgotPassword(dto);
+  }
+
+  @HttpCode(200)
+  @Patch("reset-password")
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.authService.resetPassword(dto);
   }
 
   @Get("refresh")

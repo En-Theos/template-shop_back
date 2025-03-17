@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ERoleNames } from "src/interfaces/ERoleNames";
 import { IUser } from "src/interfaces/IUser";
+import { Token } from "./token.scheme";
 
 @Entity({
     name: "users"
@@ -20,4 +21,8 @@ export class User implements IUser {
 
     @Column({ type: "enum", enum: ERoleNames })
     role: ERoleNames;
+
+    @OneToMany(() => Token, token => token.user, { cascade: ["remove", "insert", "update"] })
+    @JoinColumn()
+    tokens: Token[]
 }

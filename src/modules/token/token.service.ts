@@ -1,7 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { IToken } from 'src/interfaces/IToken';
 import { ITokenUser } from 'src/interfaces/IUser';
+import { v4 as uuid } from "uuid"
 
 @Injectable()
 export class TokenService {
@@ -39,4 +41,17 @@ export class TokenService {
         }
     }
 
+    generateForgotPasswordToken(): {
+        token: string;
+        expiresIn: Date;
+    } {
+        const token = uuid();
+        const expiresIn = new Date(new Date().getTime() + 300000)
+
+        return {token, expiresIn}
+    }
+
+    validateForgotPasswordToken(token: IToken): boolean {
+        return Boolean(token.expiresIn && (new Date(token.expiresIn).getTime() > (new Date()).getTime()));
+    }
 }

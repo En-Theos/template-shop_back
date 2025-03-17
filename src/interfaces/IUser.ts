@@ -1,4 +1,5 @@
 import { ERoleNames } from "./ERoleNames";
+import { IToken } from "./IToken";
 
 export interface IUser {
     id: number;
@@ -6,6 +7,7 @@ export interface IUser {
     email: string;
     password: string;
     role: ERoleNames;
+    tokens: IToken[]
 }
 
 export type IPublicUser = Omit<IUser, "password">;

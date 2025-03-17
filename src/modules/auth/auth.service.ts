@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { TokenService } from "../token/token.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../user/schemes/user.scheme";
@@ -7,13 +7,21 @@ import { ERoleNames } from "src/interfaces/ERoleNames";
 import { UserEntity } from "../user/entities/user.entity";
 import { RegistrationDto } from "./dtos/Registration.dto";
 import { LoginDto } from "./dtos/Login.dto";
+import { ForgotPasswordDto } from "./dtos/ForgotPassword.dto";
+import { MailService } from "../mail/mail.service";
+import { Token } from "../user/schemes/token.scheme";
+import { ETokenType } from "src/interfaces/IToken";
+import { ResetPasswordDto } from "./dtos/ResetPassword.dto";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly usersRepository: Repository<User>,
-        private readonly tokenService: TokenService
+        @InjectRepository(Token)
+        private readonly tokenRepository: Repository<Token>,
+        private readonly tokenService: TokenService,
+        private readonly mailService: MailService
     ) { }
 
     async register(dto: RegistrationDto): Promise<{
@@ -35,8 +43,8 @@ export class AuthService {
             })
         ).getPublicUser()
 
-        const refreshToken = await this.tokenService.generateRefreshToken({id: publicUser.id, role: publicUser.role});
-        const accessToken = await this.tokenService.generateAccessToken({id: publicUser.id, role: publicUser.role});
+        const refreshToken = await this.tokenService.generateRefreshToken({ id: publicUser.id, role: publicUser.role });
+        const accessToken = await this.tokenService.generateAccessToken({ id: publicUser.id, role: publicUser.role });
 
         return {
             accessToken,
@@ -54,14 +62,14 @@ export class AuthService {
             throw new UnauthorizedException("Неправильний логін чи пароль")
         }
 
-        if (!UserEntity.validatePassword(dto.password, userFromDB.password)) {
+        if (!(await UserEntity.validatePassword(dto.password, userFromDB.password))) {
             throw new UnauthorizedException("Неправильний логін чи пароль")
         }
 
         const publicUser = new UserEntity(userFromDB).getPublicUser()
 
-        const refreshToken = await this.tokenService.generateRefreshToken({id: publicUser.id, role: publicUser.role});
-        const accessToken = await this.tokenService.generateAccessToken({id: publicUser.id, role: publicUser.role});
+        const refreshToken = await this.tokenService.generateRefreshToken({ id: publicUser.id, role: publicUser.role });
+        const accessToken = await this.tokenService.generateAccessToken({ id: publicUser.id, role: publicUser.role });
 
         return {
             accessToken,
@@ -86,12 +94,66 @@ export class AuthService {
 
         const publicUser = new UserEntity(userFromDB).getPublicUser()
 
-        const refreshToken = await this.tokenService.generateRefreshToken({id: publicUser.id, role: publicUser.role});
-        const accessToken = await this.tokenService.generateAccessToken({id: publicUser.id, role: publicUser.role});
+        const refreshToken = await this.tokenService.generateRefreshToken({ id: publicUser.id, role: publicUser.role });
+        const accessToken = await this.tokenService.generateAccessToken({ id: publicUser.id, role: publicUser.role });
 
         return {
             accessToken,
             refreshToken
+        }
+    }
+
+    async forgotPassword(dto: ForgotPasswordDto) {
+        const { token, expiresIn } = this.tokenService.generateForgotPasswordToken();
+
+        const user = await this.usersRepository.findOne({
+            where: { email: dto.email },
+            relations: {
+                tokens: true
+            }
+        })
+
+        if (user) {
+            await this.mailService.sendEmailForgotPassword(dto.email, token);
+
+            const userEntity = new UserEntity(user);
+
+            userEntity.addToken(
+                this.tokenRepository.create({
+                    token,
+                    type: ETokenType.RESET_PASSWORD,
+                    expiresIn,
+                    user
+                })
+            )
+
+            this.usersRepository.save(userEntity.getUser());
+        } else {
+            throw new NotFoundException("Користувача з таким email не знайдено.")
+        }
+    }
+
+    async resetPassword(dto: ResetPasswordDto) {
+        const existToken = await this.tokenRepository.findOne({
+            where: { token: dto.token },
+            relations: {
+                user: true
+            }
+        });
+
+        if (existToken) {
+            if (this.tokenService.validateForgotPasswordToken(existToken)) {
+                const { user } = existToken;
+
+                user.password = await UserEntity.hashPassword(dto.password);
+
+                this.tokenRepository.remove(existToken);
+                this.usersRepository.save(user);
+            } else {
+                throw new BadRequestException("Токен для скидування паролю недійсний або прострочений.")
+            }
+        } else {
+            throw new NotFoundException("Такий токен для скидування паролю не знайдено.")
         }
     }
 }

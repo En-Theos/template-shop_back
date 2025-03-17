@@ -5,6 +5,7 @@ import { getMySQLConfig } from '../configs/mysql.config';
 import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
 import { UserModule } from './user/user.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     TokenModule,
     UserModule,
+    MailModule,
   ],
 })
 export class AppModule { }

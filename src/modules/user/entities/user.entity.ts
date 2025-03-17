@@ -1,6 +1,7 @@
 import { ERoleNames } from "src/interfaces/ERoleNames";
 import { IPublicUser, IUser } from "src/interfaces/IUser";
 import * as bcrypt from "bcrypt";
+import { IToken } from "src/interfaces/IToken";
 
 export class UserEntity {
     private id: number;
@@ -8,6 +9,7 @@ export class UserEntity {
     private email: string;
     private password: string;
     private role: ERoleNames;
+    private tokens: IToken[]
 
     constructor(userRepo: IUser) {
         this.id = userRepo.id;
@@ -15,6 +17,7 @@ export class UserEntity {
         this.email = userRepo.email;
         this.password = userRepo.password;
         this.role = userRepo.role;
+        this.tokens = userRepo.tokens
     }
 
     public getPublicUser(): IPublicUser {
@@ -23,6 +26,7 @@ export class UserEntity {
             name: this.name,
             email: this.email,
             role: this.role,
+            tokens: this.tokens
         };
     }
 
@@ -33,7 +37,17 @@ export class UserEntity {
             email: this.email,
             password: this.password,
             role: this.role,
+            tokens: this.tokens
         };
+    }
+
+    public addToken(token: IToken) {
+        if (this.tokens) {
+            this.tokens = this.tokens.filter(item => item.type !== token.type);
+            this.tokens.push(token)
+        } else {
+            this.tokens = [token]
+        }
     }
 
     public updateInfo(data: Pick<IUser, "name" | "email">): this {
