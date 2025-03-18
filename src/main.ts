@@ -1,11 +1,15 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
+import { NestFactory } from '@nestjs/core';
+import { NestFastifyApplication, FastifyAdapter } from '@nestjs/platform-fastify';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
 
   const config = app.get(ConfigService);
 
