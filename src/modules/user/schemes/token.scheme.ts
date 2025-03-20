@@ -1,26 +1,22 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ETokenType, IToken } from "src/interfaces/IToken";
+import { ETokenType } from "src/interfaces/ETokenType";
 import { User } from "./user.scheme";
 
-@Entity({
-    name: "tokens"
-})
-export class Token implements IToken {
+@Entity({ name: "tokens" })
+export class Token {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: "uuid" })
+    @Column({ type: "uuid", unique: true })
     token: string;
 
-    @Column({ type: "datetime", name: "expires_in", nullable: true })
-    expiresIn: Date | null;
+    @Column({ type: "datetime", name: "expires_in", default: () => "CURRENT_TIMESTAMP" })
+    expiresIn: Date;
 
     @Column({ type: "enum", enum: ETokenType })
     type: ETokenType;
 
-    @ManyToOne(() => User, user => user.tokens, {
-        orphanedRowAction: "delete"
-    })
+    @ManyToOne(() => User, user => user.tokens)
     @JoinColumn({ name: "user_id" })
-    user: User
+    user: User;
 }

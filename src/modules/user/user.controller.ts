@@ -3,8 +3,8 @@ import { UserService } from './user.service';
 import { Authorization } from 'src/decorators/auth.decorator';
 import { ERoleNames } from 'src/interfaces/ERoleNames';
 import { Request } from "express"
-import { IPublicUser, ITokenUser } from 'src/interfaces/IUser';
 import { UpdateUserInfoDto } from './dtos/UpdateUserInfo.dto';
+import { IPublicUser, ITokenUser } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {

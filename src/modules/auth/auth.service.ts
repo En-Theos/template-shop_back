@@ -10,7 +10,7 @@ import { LoginDto } from "./dtos/Login.dto";
 import { ForgotPasswordDto } from "./dtos/ForgotPassword.dto";
 import { MailService } from "../mail/mail.service";
 import { Token } from "../user/schemes/token.scheme";
-import { ETokenType } from "src/interfaces/IToken";
+import { ETokenType } from "src/interfaces/ETokenType";
 import { ResetPasswordDto } from "./dtos/ResetPassword.dto";
 
 @Injectable()

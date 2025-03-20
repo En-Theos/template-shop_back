@@ -1,28 +1,54 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ERoleNames } from "src/interfaces/ERoleNames";
-import { IUser } from "src/interfaces/IUser";
 import { Token } from "./token.scheme";
+import { Product } from "src/modules/product/schemes/product.scheme";
+import { Review } from "src/modules/review/schemes/review.scheme";
+import { Order } from "src/modules/order/schemes/order.scheme";
 
-@Entity({
-    name: "users"
-})
-export class User implements IUser {
+@Entity({ name: "users" })
+export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: "varchar", length: 18, nullable: true })
-    name: string;
+    @Column({name: "first_name", type: "varchar", length: 50, nullable: true })
+    firstName: string | null;
+
+    @Column({name: "last_name", type: "varchar", length: 50, nullable: true })
+    lastName: string | null;
+
+    @Column({name: "middle_name", type: "varchar", length: 50, nullable: true })
+    middleName: string | null;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     email: string;
 
-    @Column({ type: "varchar" })
+    @Column({ type: "varchar", length: 20, unique: true, nullable: true })
+    phone: string;
+
+    @Column({ type: "varchar", length: 255 })
     password: string;
 
-    @Column({ type: "enum", enum: ERoleNames })
+    @Column({ type: "enum", enum: ERoleNames, default: ERoleNames.USER })
     role: ERoleNames;
 
-    @OneToMany(() => Token, token => token.user, { cascade: ["remove", "insert", "update"] })
-    @JoinColumn()
-    tokens: Token[]
+    @OneToMany(() => Token, token => token.user)
+    tokens: Token[];
+
+    @ManyToMany(() => Product)
+    @JoinTable({ name: "favorites" })
+    favorites: Product[];
+
+    @ManyToMany(() => Product)
+    @JoinTable({ name: "revised" })
+    revised: Product[];
+
+    @OneToMany(() => Review, review => review.user)
+    reviews: Review[];
+
+    @ManyToMany(() => Product)
+    @JoinTable({ name: "shopping_cart" })
+    shoppingCart: Product[];
+
+    @OneToMany(() => Order, order => order.user)
+    orders: Order[];
 }

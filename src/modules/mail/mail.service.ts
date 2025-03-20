@@ -1,9 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { IUser } from 'src/interfaces/IUser';
-import { IToken } from 'src/interfaces/IToken';
 import { render } from '@react-email/components';
 import { ForgotPasswordTemplate } from './templates/ForgotPassword.template';
+import { User } from '../user/schemes/user.scheme';
+import { Token } from '../user/schemes/token.scheme';
 
 @Injectable()
 export class MailService {
@@ -11,7 +11,7 @@ export class MailService {
         private readonly mailerService: MailerService
     ) { }
 
-    async sendEmailForgotPassword(email: IUser["email"], token: IToken["token"]) {
+    async sendEmailForgotPassword(email: User["email"], token: Token["token"]) {
         try {
             await this.mailerService.sendMail({
                 to: email,

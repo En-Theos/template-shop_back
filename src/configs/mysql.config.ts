@@ -13,7 +13,7 @@ export function getMySQLConfig(): TypeOrmModuleAsyncOptions {
             password: configService.getOrThrow<string>('MYSQL_ROOT_PASSWORD'),
             database: configService.getOrThrow<string>('MYSQL_DATABASE'),
             autoLoadEntities: true,
-            synchronize: true,
+            synchronize: true, 
         }),
     }
 }
