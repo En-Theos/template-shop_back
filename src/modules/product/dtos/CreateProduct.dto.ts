@@ -1,20 +1,12 @@
-import {
-	IsArray,
-	IsInt,
-	IsNumber,
-	IsOptional,
-	IsPositive,
-	IsString,
-	MaxLength,
-} from 'class-validator'
+import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from 'class-validator'
 
 export class CreateProductDto {
 	@IsOptional()
 	@IsInt({ message: 'ID батьківського продукту має бути цілим числом' })
 	parentProductId?: number
 
-	@IsString({ message: 'SKU має бути рядком' })
-	@MaxLength(100, { message: 'SKU не може перевищувати 100 символів' })
+	@IsString({ message: 'Артикул має бути рядком' })
+	@MaxLength(100, { message: 'Артикул не може перевищувати 100 символів' })
 	sku: string
 
 	@IsString({ message: 'Назва має бути рядком' })
@@ -35,6 +27,7 @@ export class CreateProductDto {
 
 	@IsOptional()
 	@IsInt({ message: 'Кількість доступних товарів має бути цілим числом' })
+	@IsPositive({ message: 'Кількість має бути додатним числом' })
 	availability?: number
 
 	@IsOptional()

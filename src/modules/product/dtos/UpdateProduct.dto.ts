@@ -2,8 +2,8 @@ import { IsOptional, IsInt, IsString, MaxLength, IsNumber, IsPositive, IsArray }
 
 export class UpdateProductDto {
 	@IsOptional()
-	@IsString({ message: 'SKU має бути рядком' })
-	@MaxLength(100, { message: 'SKU не може перевищувати 100 символів' })
+	@IsString({ message: 'Артикул має бути рядком' })
+	@MaxLength(100, { message: 'Артикул не може перевищувати 100 символів' })
 	sku?: string
 
 	@IsOptional()

@@ -90,12 +90,7 @@ export class UserEntity {
 		}
 	}
 
-	public updateInfo(
-		data: Pick<
-			User,
-			'firstName' | 'lastName' | 'middleName' | 'email' | 'phone'
-		>
-	): this {
+	public updateInfo(data: Pick<User, 'firstName' | 'lastName' | 'middleName' | 'email' | 'phone'>): this {
 		this.firstName = data.firstName
 		this.lastName = data.lastName
 		this.middleName = data.middleName
@@ -105,18 +100,13 @@ export class UserEntity {
 		return this
 	}
 
-	public static async hashPassword(
-		password: User['password']
-	): Promise<User['password']> {
+	public static async hashPassword(password: User['password']): Promise<User['password']> {
 		const salt = await bcrypt.genSalt(10)
 
 		return await bcrypt.hash(password, salt)
 	}
 
-	public static async validatePassword(
-		passwordFromReq: User['password'],
-		passwordFromDB: User['password']
-	): Promise<boolean> {
+	public static async validatePassword(passwordFromReq: User['password'], passwordFromDB: User['password']): Promise<boolean> {
 		return await bcrypt.compare(passwordFromReq, passwordFromDB)
 	}
 }

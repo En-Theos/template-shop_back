@@ -36,11 +36,12 @@ export class Product {
 		transformer: {
 			to: (value: number) => value,
 			from: (value: string) => parseFloat(value)
-		}
+		},
+		unsigned: true
 	})
 	price: number
 
-	@Column({ type: 'tinyint', unsigned: true })
+	@Column({ type: 'tinyint', unsigned: true, default: 0 })
 	rating: number
 
 	@OneToMany(() => ProductImage, image => image.product)
