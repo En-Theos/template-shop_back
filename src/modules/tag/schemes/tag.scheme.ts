@@ -1,17 +1,17 @@
-import { Product } from "src/modules/product/schemes/product.scheme";
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from 'src/modules/product/schemes/product.scheme'
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity({ name: "tags" })
+@Entity({ name: 'tags' })
 export class Tag {
-    @PrimaryGeneratedColumn()
-    id: number;
+	@PrimaryGeneratedColumn()
+	id: number
 
-    @Column({ type: "varchar", length: 100, unique: true })
-    type: string;
+	@Column({ type: 'varchar', length: 100, unique: true })
+	type: string
 
-    @Column({ type: "varchar", length: 255 })
-    name: string;
+	@Column({ type: 'varchar', length: 255 })
+	name: string
 
-    @ManyToMany(() => Product, product => product.tags)
-    products: Product[];
+	@ManyToMany(() => Product, product => product.tags)
+	products: Product[]
 }

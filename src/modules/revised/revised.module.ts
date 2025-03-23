@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { RevisedService } from './revised.service';
-import { RevisedController } from './revised.controller';
+import { Module } from '@nestjs/common'
+
+import { RevisedController } from './revised.controller'
+import { RevisedService } from './revised.service'
 
 @Module({
-  controllers: [RevisedController],
-  providers: [RevisedService],
+	controllers: [RevisedController],
+	providers: [RevisedService]
 })
 export class RevisedModule {}

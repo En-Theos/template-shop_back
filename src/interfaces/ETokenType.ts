@@ -1,3 +1,3 @@
 export enum ETokenType {
-    RESET_PASSWORD="reset_password"
+	RESET_PASSWORD = 'reset_password'
 }

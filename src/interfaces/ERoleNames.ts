@@ -1,4 +1,4 @@
 export enum ERoleNames {
-    USER = "user",
-    ADMIN = "admin"
+	USER = 'user',
+	ADMIN = 'admin'
 }

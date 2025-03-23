@@ -1,41 +1,45 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './schemes/user.scheme';
-import { Repository } from 'typeorm';
-import { UpdateUserInfoDto } from './dtos/UpdateUserInfo.dto';
-import { IPublicUser, UserEntity } from './entities/user.entity';
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+
+import { UpdateUserInfoDto } from './dtos/UpdateUserInfo.dto'
+import { IPublicUser, UserEntity } from './entities/user.entity'
+import { User } from './schemes/user.scheme'
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectRepository(User)
-        private readonly usersRepository: Repository<User>,
-    ) { }
+	constructor(
+		@InjectRepository(User)
+		private readonly usersRepository: Repository<User>
+	) {}
 
-    async getUserInfo(userId: IPublicUser["id"]) {
-        const userFromDB = await this.usersRepository.findOneBy({ id: userId });
-        
-        if (!userFromDB) {
-            throw new NotFoundException("Такого користувача не знайдено")
-        }
+	async getUserInfo(userId: IPublicUser['id']) {
+		const userFromDB = await this.usersRepository.findOneBy({ id: userId })
 
-        return new UserEntity(userFromDB).getPublicUser()
-    }
+		if (!userFromDB) {
+			throw new NotFoundException('Такого користувача не знайдено')
+		}
 
-    async updateUserInfo(
-        { userId, newData }:
-            { userId: User["id"], newData: UpdateUserInfoDto }
-    ): Promise<IPublicUser> {
-        const userFromDB = await this.usersRepository.findOneBy({ id: userId });
+		return new UserEntity(userFromDB).getPublicUser()
+	}
 
-        if (!userFromDB) {
-            throw new NotFoundException("Такого користувача не знайдено")
-        }
+	async updateUserInfo({
+		userId,
+		newData
+	}: {
+		userId: User['id']
+		newData: UpdateUserInfoDto
+	}): Promise<IPublicUser> {
+		const userFromDB = await this.usersRepository.findOneBy({ id: userId })
 
-        const userEntity = new UserEntity(userFromDB).updateInfo(newData)
+		if (!userFromDB) {
+			throw new NotFoundException('Такого користувача не знайдено')
+		}
 
-        await this.usersRepository.save(userEntity.getUser())
+		const userEntity = new UserEntity(userFromDB).updateInfo(newData)
 
-        return userEntity.getPublicUser();
-    }
+		await this.usersRepository.save(userEntity.getUser())
+
+		return userEntity.getPublicUser()
+	}
 }
