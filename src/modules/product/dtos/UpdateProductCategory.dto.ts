@@ -1,7 +1,7 @@
 import { IsInt, IsOptional } from "class-validator"
 
 export class UpdateProductCategoryDto {
-	@IsInt({ message: 'ID продукту має бути цілим числом' })
+	@IsInt({ message: 'ID товару має бути цілим числом' })
 	productId: number
 
 	@IsOptional()

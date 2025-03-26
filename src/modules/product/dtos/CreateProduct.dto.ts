@@ -2,7 +2,7 @@ import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength }
 
 export class CreateProductDto {
 	@IsOptional()
-	@IsInt({ message: 'ID батьківського продукту має бути цілим числом' })
+	@IsInt({ message: 'ID батьківського товару має бути цілим числом' })
 	parentProductId?: number
 
 	@IsString({ message: 'Артикул має бути рядком' })

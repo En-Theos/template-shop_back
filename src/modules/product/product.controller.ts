@@ -26,7 +26,7 @@ export class ProductController {
 
 	@Get('/:id')
 	async getOneProduct(@Param('id') id: Product['id']) {
-		return await this.productService.getOneProduct(id)
+		return await this.productService.getOneProduct(Number(id))
 	}
 
 	@Authorization(ERoleNames.ADMIN)
@@ -38,7 +38,7 @@ export class ProductController {
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/:id')
 	async updateProduct(@Param('id') id: Product['id'], @Body() dto: UpdateProductDto) {
-		return await this.productService.updateProduct(id, dto)
+		return await this.productService.updateProduct(Number(id), dto)
 	}
 
 	@Authorization(ERoleNames.ADMIN)
@@ -66,7 +66,7 @@ export class ProductController {
 	}
 
 	@Authorization(ERoleNames.ADMIN)
-	@Post('children')
+	@Post('childrens')
 	async createChildProduct(@Body() dto: CreateChildProductDto) {
 		return await this.productService.createChildProduct(dto)
 	}

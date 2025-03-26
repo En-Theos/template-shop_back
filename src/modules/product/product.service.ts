@@ -92,23 +92,25 @@ export class ProductService {
 				reviews: true
 			}
 		})
-		if (!product) throw new NotFoundException('Продукт не знайдено')
+		if (!product) throw new NotFoundException('Товар не знайдено')
 		return product
 	}
 
 	async createProduct(dto: CreateProductDto) {
 		const exsistProduct = await this.productsRepository.findOne({ where: { sku: dto.sku } })
-		if (exsistProduct) throw new ConflictException('Продукт з таким артикулом уже існує')
+		if (exsistProduct) throw new ConflictException('Товар з таким артикулом уже існує')
 
-		const newProduct = this.productsRepository.create(dto)
+		const newProduct = this.productsRepository.create({
+			parentProduct: { id: dto.parentProductId },
+			...dto
+		})
+
 		const createdProduct = await this.productsRepository.save(newProduct)
 
 		return await this.productsRepository.findOne({
 			where: { id: createdProduct.id },
 			relations: {
 				images: true,
-				parentProduct: true,
-				variations: true,
 				characteristics: true,
 				tags: true,
 				reviews: true
@@ -117,10 +119,27 @@ export class ProductService {
 	}
 
 	async updateProduct(id: Product['id'], dto: UpdateProductDto) {
-		const exsistProduct = await this.productsRepository.findOne({ where: { sku: dto.sku } })
-		if (exsistProduct) throw new ConflictException('Продукт з таким артикулом уже існує')
+		const existingProduct = await this.productsRepository.findOne({ where: { id } })
+		if (!existingProduct) throw new NotFoundException('Товар не знайдено')
 
-		return await this.productsRepository.save({ id, ...dto })
+		if (dto.sku) {
+			const duplicateProduct = await this.productsRepository.findOne({ where: { sku: dto.sku } })
+			if (duplicateProduct && duplicateProduct.id !== id) {
+				throw new ConflictException('Товар з таким артикулом уже існує')
+			}
+		}
+
+		await this.productsRepository.save({ ...existingProduct, ...dto })
+
+		return await this.productsRepository.findOne({
+			where: { id },
+			relations: {
+				images: true,
+				characteristics: true,
+				tags: true,
+				reviews: true
+			}
+		})
 	}
 
 	async deleteProduct(dto: DeleteProductDto) {
@@ -202,7 +221,7 @@ export class ProductService {
 	async changeProductParent(dto: ChangeProductParentDto[]) {
 		const updateValues = dto
 			.map(({ productId, parentProductId }) => {
-				return `WHEN id = ${productId} THEN ${parentProductId}`
+				return `WHEN id = ${productId} THEN ${parentProductId || null}`
 			})
 			.join(' ')
 
@@ -227,15 +246,29 @@ export class ProductService {
 			const parentProduct = await queryRunner.manager.findOne(Product, { where: { id: dto.productId } })
 
 			if (!parentProduct) {
-				throw new NotFoundException('Продукт не знайдено')
+				throw new NotFoundException('Товар не знайдено')
+			}
+
+			const SKUArr = dto.variations.map(item => item.sku);
+
+			const existsChildren = await queryRunner.manager.find(Product, { where: { sku: In(SKUArr) } })
+
+			if (existsChildren.length > 0) {
+				throw new ConflictException("Товар з таким артикулом уже існує")
+			}
+
+			if (SKUArr.length !== new Set(SKUArr).size) {
+				throw new ConflictException("Артикули всіх варіацій повинні бути унікальними")
 			}
 
 			// Створення дочірніх товарів в межах транзакції
 			for (const { sku, characteristicValueIds } of dto.variations) {
 				const newChild = this.productsRepository.create({
 					...parentProduct,
+					id: undefined,
 					sku,
-					characteristics: characteristicValueIds.map(id => ({ id }))
+					parentProduct,
+					characteristics: (characteristicValueIds || []).map(id => ({ id }))
 				})
 
 				await queryRunner.manager.save(newChild) // Використовуємо queryRunner для транзакції
