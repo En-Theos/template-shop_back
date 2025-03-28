@@ -2,7 +2,7 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 
-import { ChangeProductParentDto } from './dtos/ChangeProductParent.dto'
+import { ChangeParentProductDto } from './dtos/ChangeParentProduct.dto'
 import { CreateChildProductDto } from './dtos/CreateChildProduct.dto'
 import { CreateProductDto } from './dtos/CreateProduct.dto'
 import { DeleteProductDto } from './dtos/DeleteProduct.dto'
@@ -101,7 +101,7 @@ export class ProductService {
 		if (exsistProduct) throw new ConflictException('Товар з таким артикулом уже існує')
 
 		const newProduct = this.productsRepository.create({
-			parentProduct: { id: dto.parentProductId },
+			parentProduct: dto?.parentProductId ? { id: dto.parentProductId } : null,
 			...dto
 		})
 
@@ -218,7 +218,7 @@ export class ProductService {
 		}
 	}
 
-	async changeProductParent(dto: ChangeProductParentDto[]) {
+	async changeParentProduct(dto: ChangeParentProductDto[]) {
 		const updateValues = dto
 			.map(({ productId, parentProductId }) => {
 				return `WHEN id = ${productId} THEN ${parentProductId || null}`

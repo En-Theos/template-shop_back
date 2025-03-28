@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common'
 import { Authorization } from 'src/decorators/auth.decorator'
 import { ERoleNames } from 'src/interfaces/ERoleNames'
 
-import { ChangeProductParentDto } from './dtos/ChangeProductParent.dto'
+import { ChangeParentProductDto } from './dtos/ChangeParentProduct.dto'
 import { CreateChildProductDto } from './dtos/CreateChildProduct.dto'
 import { CreateProductDto } from './dtos/CreateProduct.dto'
 import { DeleteProductDto } from './dtos/DeleteProduct.dto'
@@ -43,8 +43,8 @@ export class ProductController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Delete('/')
-	async deleteProduct(@Body() dto: DeleteProductDto) {
-		return await this.productService.deleteProduct(dto)
+	async deleteProduct(@Query() query: DeleteProductDto) {
+		return await this.productService.deleteProduct(query)
 	}
 
 	@Authorization(ERoleNames.ADMIN)
@@ -61,8 +61,8 @@ export class ProductController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Patch('parent')
-	async changeProductParent(@Body() dto: ChangeProductParentDto[]) {
-		return await this.productService.changeProductParent(dto)
+	async changeParentProduct(@Body() dto: ChangeParentProductDto[]) {
+		return await this.productService.changeParentProduct(dto)
 	}
 
 	@Authorization(ERoleNames.ADMIN)
