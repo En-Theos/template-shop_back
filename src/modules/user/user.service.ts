@@ -14,13 +14,16 @@ export class UserService {
 	) {}
 
 	async getUserInfo(userId: IPublicUser['id']) {
-		const userFromDB = await this.usersRepository.findOneBy({ id: userId })
+		const userFromDB = await this.usersRepository.findOne({
+			where: { id: userId },
+			select: ['id','firstName','lastName','middleName','email','phone','role']
+		})
 
 		if (!userFromDB) {
 			throw new NotFoundException('Такого користувача не знайдено')
 		}
 
-		return new UserEntity(userFromDB).getPublicUser()
+		return userFromDB
 	}
 
 	async updateUserInfo({
@@ -41,5 +44,11 @@ export class UserService {
 		await this.usersRepository.save(userEntity.getUser())
 
 		return userEntity.getPublicUser()
+	}
+
+	async getAllUsersInfo() {
+		return await this.usersRepository.find({
+			select: ['id','firstName','lastName','middleName','email','phone','role'],
+		})
 	}
 }
