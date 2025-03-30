@@ -142,8 +142,8 @@ export class ProductService {
 		})
 	}
 
-	async deleteProduct(dto: DeleteProductDto) {
-		await this.productsRepository.delete({ id: In(dto.productIds) })
+	async deleteProduct(query: DeleteProductDto) {
+		await this.productsRepository.delete({ id: In(query.productIds) })
 	}
 
 	async updateProductCharacteristics(dto: UpdateProductCharacteristicsDto[]) {

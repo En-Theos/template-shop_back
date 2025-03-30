@@ -14,21 +14,31 @@ export class CategoryController {
 
 	@Authorization(ERoleNames.USER, ERoleNames.ADMIN)
 	@Get('/')
-	async allCategories() {}
+	async allCategories() {
+		return await this.categoryService.allCategories()
+	}
 
 	@Authorization(ERoleNames.ADMIN)
 	@Post('/')
-	async createCategory(@Body() dto: CreateCategoryDto) {}
+	async createCategory(@Body() dto: CreateCategoryDto) {
+		return await this.categoryService.createCategory(dto)
+	}
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/')
-	async updateCategory(@Param() id: Pick<UpdateCategoryDto, 'id'>, @Body() dto: Pick<UpdateCategoryDto, 'name'>) {}
+	async updateCategory(@Param() id: Pick<UpdateCategoryDto, 'id'>, @Body() dto: Pick<UpdateCategoryDto, 'name'>) {
+		return await this.categoryService.updateCategory({ ...id, ...dto })
+	}
 
 	@Authorization(ERoleNames.ADMIN)
 	@Delete('/')
-	async deleteCategory(@Query() query: DeleteProductDto) {}
+	async deleteCategory(@Query() query: DeleteProductDto) {
+		return await this.categoryService.deleteCategory(query);
+	}
 
 	@Authorization(ERoleNames.ADMIN)
-	@Patch('/change-parent')
-	async changeParentCategory(@Body() dto: ChangeParentCategoryDto[]) {}
+	@Patch('change-parent')
+	async changeParentCategory(@Body() dto: ChangeParentCategoryDto[]) {
+		return await this.categoryService.changeParentCategory(dto)
+	}
 }

@@ -6,5 +6,5 @@ export class ChangeParentCategoryDto {
 
 	@IsInt({ message: 'Новий ID батьківської категорії має бути цілим числом' })
 	@IsOptional()
-	newParentCategoryId?: number
+	parentCategoryId?: number
 }
