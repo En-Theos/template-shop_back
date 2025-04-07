@@ -1,4 +1,4 @@
-import { IsOptional, IsInt, IsString, MaxLength, IsNumber, IsPositive, IsArray } from "class-validator"
+import { IsOptional, IsInt, IsString, MaxLength, IsNumber, IsPositive, IsArray, MinLength } from "class-validator"
 
 export class UpdateProductDto {
 	@IsOptional()

@@ -18,6 +18,9 @@ export class Characteristic {
 	@Column({ type: 'varchar', length: 255 })
 	name: string
 
+	@Column({ type: 'varchar', length: 255 })
+	group: string
+
 	@ManyToOne(() => Category, category => category.characteristics)
 	@JoinColumn({ name: 'category_id' })
 	category: Category
