@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 import { In, Repository } from 'typeorm'
 
 import { ChangeParentProductDto } from './dtos/ChangeParentProduct.dto'
@@ -80,7 +81,7 @@ export class ProductService {
 		return query.getMany()
 	}
 
-	async getOneProduct(id: Product['id']) {
+	async getOneProduct(id: IdParamDto["id"]) {
 		const product = await this.productsRepository.findOne({
 			where: { id },
 			relations: {
@@ -118,7 +119,7 @@ export class ProductService {
 		})
 	}
 
-	async updateProduct(dto: UpdateProductDto) {
+	async updateProduct(dto: IdParamDto & UpdateProductDto) {
 		const existingProduct = await this.productsRepository.findOne({ where: { id: dto.id } })
 		if (!existingProduct) throw new NotFoundException('Товар не знайдено')
 
@@ -249,16 +250,16 @@ export class ProductService {
 				throw new NotFoundException('Товар не знайдено')
 			}
 
-			const SKUArr = dto.variations.map(item => item.sku);
+			const SKUArr = dto.variations.map(item => item.sku)
 
 			const existsChildren = await queryRunner.manager.find(Product, { where: { sku: In(SKUArr) } })
 
 			if (existsChildren.length > 0) {
-				throw new ConflictException("Товар з таким артикулом уже існує")
+				throw new ConflictException('Товар з таким артикулом уже існує')
 			}
 
 			if (SKUArr.length !== new Set(SKUArr).size) {
-				throw new ConflictException("Артикули всіх варіацій повинні бути унікальними")
+				throw new ConflictException('Артикули всіх варіацій повинні бути унікальними')
 			}
 
 			// Створення дочірніх товарів в межах транзакції

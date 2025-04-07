@@ -13,7 +13,7 @@ import { UpdateProductCategoryDto } from './dtos/UpdateProductCategory.dto'
 import { UpdateProductCharacteristicsDto } from './dtos/UpdateProductCharacteristics.dto'
 import { UpdateProductTagsDto } from './dtos/UpdateProductTags.dto'
 import { ProductService } from './product.service'
-import { Product } from './schemes/product.scheme'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 
 @Controller('products')
 export class ProductController {
@@ -25,8 +25,8 @@ export class ProductController {
 	}
 
 	@Get('/:id')
-	async getOneProduct(@Param('id') id: Product['id']) {
-		return await this.productService.getOneProduct(Number(id))
+	async getOneProduct(@Param() param: IdParamDto) {
+		return await this.productService.getOneProduct(param.id)
 	}
 
 	@Authorization(ERoleNames.ADMIN)
@@ -37,8 +37,8 @@ export class ProductController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/:id')
-	async updateProduct(@Param('id') id: UpdateProductDto['id'], @Body() dto: Omit<UpdateProductDto, "id">) {
-		return await this.productService.updateProduct({id, ...dto})
+	async updateProduct(@Param() param: IdParamDto, @Body() dto: UpdateProductDto) {
+		return await this.productService.updateProduct({...param, ...dto})
 	}
 
 	@Authorization(ERoleNames.ADMIN)

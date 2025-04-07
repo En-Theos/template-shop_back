@@ -1,11 +1,6 @@
-import { Type } from 'class-transformer'
 import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from 'class-validator'
 
 export class UpdateProductDto {
-	@IsInt({ message: 'ID характеристики має бути цілим числом' })
-	@Type(() => Number)
-	id: number
-
 	@IsOptional()
 	@IsString({ message: 'Артикул має бути рядком' })
 	@MaxLength(100, { message: 'Артикул не може перевищувати 100 символів' })

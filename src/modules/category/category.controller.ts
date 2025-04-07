@@ -7,6 +7,7 @@ import { ChangeParentCategoryDto } from './dtos/ChangeParentCategory.dto'
 import { CreateCategoryDto } from './dtos/CreateCategory.dto'
 import { DeleteProductDto } from './dtos/DeleteCategory.dto'
 import { UpdateCategoryDto } from './dtos/UpdateCategory.dto'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 
 @Controller('category')
 export class CategoryController {
@@ -26,8 +27,8 @@ export class CategoryController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/')
-	async updateCategory(@Param() id: Pick<UpdateCategoryDto, 'id'>, @Body() dto: Pick<UpdateCategoryDto, 'name'>) {
-		return await this.categoryService.updateCategory({ ...id, ...dto })
+	async updateCategory(@Param() param: IdParamDto, @Body() dto: UpdateCategoryDto) {
+		return await this.categoryService.updateCategory({ ...param, ...dto })
 	}
 
 	@Authorization(ERoleNames.ADMIN)

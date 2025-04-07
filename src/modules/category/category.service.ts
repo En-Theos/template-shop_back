@@ -7,6 +7,7 @@ import { CreateCategoryDto } from './dtos/CreateCategory.dto'
 import { DeleteProductDto } from './dtos/DeleteCategory.dto'
 import { UpdateCategoryDto } from './dtos/UpdateCategory.dto'
 import { Category } from './schemes/category.scheme'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 
 @Injectable()
 export class CategoryService {
@@ -47,7 +48,7 @@ export class CategoryService {
 		})
 	}
 
-	async updateCategory(dto: UpdateCategoryDto) {
+	async updateCategory(dto: IdParamDto & UpdateCategoryDto) {
 		const existingCategory = await this.categoryRepository.findOne({ where: { id: dto.id } })
 		if (!existingCategory) throw new NotFoundException('Категорію не знайдено')
 

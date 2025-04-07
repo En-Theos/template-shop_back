@@ -9,6 +9,8 @@ import { UpdateCharacteristicDto } from './dtos/UpdateCharacteristic.dto'
 import { СharacteristicService } from './сharacteristic.service'
 import { CreateCharacteristicValueDto } from './dtos/CreateCharacteristicValue.dto'
 import { DeleteCharacteristicValueDto } from './dtos/DeleteCharacteristicValue.dto'
+import { UpdateCharacteristicValueDto } from './dtos/UpdateCharacteristicValue.dto'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 
 @Controller('сharacteristic')
 export class СharacteristicController {
@@ -27,8 +29,8 @@ export class СharacteristicController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/:id')
-	async updateCharacteristic(@Param('id') id: UpdateCharacteristicDto['id'], @Body() dto: Omit<UpdateCharacteristicDto, "id">) {
-		return await this.сharacteristicService.updateCharacteristic({id, ...dto})
+	async updateCharacteristic(@Param() param: IdParamDto, @Body() dto: UpdateCharacteristicDto) {
+		return await this.сharacteristicService.updateCharacteristic({...param, ...dto})
 	}
 
 	@Authorization(ERoleNames.ADMIN)
@@ -41,6 +43,12 @@ export class СharacteristicController {
 	@Post('value')
 	async createCharacteristicValue(@Body() dto: CreateCharacteristicValueDto) {
 		return await this.сharacteristicService.createCharacteristicValue(dto);
+	}
+
+	@Authorization(ERoleNames.ADMIN)
+	@Put('value/:id')
+	async updateCharacteristicValue(@Param() param: IdParamDto, @Body() dto: UpdateCharacteristicValueDto) {
+		return await this.сharacteristicService.updateCharacteristicValue({...param, ...dto});
 	}
 
 	@Authorization(ERoleNames.ADMIN)
