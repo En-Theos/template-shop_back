@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { Authorization } from 'src/decorators/auth.decorator'
 import { ERoleNames } from 'src/interfaces/ERoleNames'
 
@@ -27,8 +27,8 @@ export class СharacteristicController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/:id')
-	async updateCharacteristic(@Body() dto: UpdateCharacteristicDto) {
-		return await this.сharacteristicService.updateCharacteristic(dto)
+	async updateCharacteristic(@Param('id') id: UpdateCharacteristicDto['id'], @Body() dto: Omit<UpdateCharacteristicDto, "id">) {
+		return await this.сharacteristicService.updateCharacteristic({id, ...dto})
 	}
 
 	@Authorization(ERoleNames.ADMIN)

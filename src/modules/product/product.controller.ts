@@ -37,8 +37,8 @@ export class ProductController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/:id')
-	async updateProduct(@Param('id') id: Product['id'], @Body() dto: UpdateProductDto) {
-		return await this.productService.updateProduct(Number(id), dto)
+	async updateProduct(@Param('id') id: UpdateProductDto['id'], @Body() dto: Omit<UpdateProductDto, "id">) {
+		return await this.productService.updateProduct({id, ...dto})
 	}
 
 	@Authorization(ERoleNames.ADMIN)

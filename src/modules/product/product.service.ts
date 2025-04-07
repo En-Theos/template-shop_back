@@ -118,13 +118,13 @@ export class ProductService {
 		})
 	}
 
-	async updateProduct(id: Product['id'], dto: UpdateProductDto) {
-		const existingProduct = await this.productsRepository.findOne({ where: { id } })
+	async updateProduct(dto: UpdateProductDto) {
+		const existingProduct = await this.productsRepository.findOne({ where: { id: dto.id } })
 		if (!existingProduct) throw new NotFoundException('Товар не знайдено')
 
 		if (dto.sku) {
 			const duplicateProduct = await this.productsRepository.findOne({ where: { sku: dto.sku } })
-			if (duplicateProduct && duplicateProduct.id !== id) {
+			if (duplicateProduct && duplicateProduct.id !== dto.id) {
 				throw new ConflictException('Товар з таким артикулом уже існує')
 			}
 		}
@@ -132,7 +132,7 @@ export class ProductService {
 		await this.productsRepository.save({ ...existingProduct, ...dto })
 
 		return await this.productsRepository.findOne({
-			where: { id },
+			where: { id: dto.id },
 			relations: {
 				images: true,
 				characteristics: true,
