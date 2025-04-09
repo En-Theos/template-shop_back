@@ -1,18 +1,18 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { Authorization } from 'src/decorators/auth.decorator'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 import { ERoleNames } from 'src/interfaces/ERoleNames'
 
 import { CreateCharacteristicDto } from './dtos/CreateCharacteristic.dto'
+import { CreateCharacteristicValueDto } from './dtos/CreateCharacteristicValue.dto'
 import { DeleteCharacteristicDto } from './dtos/DeleteCharacteristic.dto'
+import { DeleteCharacteristicValueDto } from './dtos/DeleteCharacteristicValue.dto'
 import { GetCharacteristicsDto } from './dtos/GetCharacteristics.dto'
 import { UpdateCharacteristicDto } from './dtos/UpdateCharacteristic.dto'
-import { СharacteristicService } from './сharacteristic.service'
-import { CreateCharacteristicValueDto } from './dtos/CreateCharacteristicValue.dto'
-import { DeleteCharacteristicValueDto } from './dtos/DeleteCharacteristicValue.dto'
 import { UpdateCharacteristicValueDto } from './dtos/UpdateCharacteristicValue.dto'
-import { IdParamDto } from 'src/dtos/IdParam.dto'
+import { СharacteristicService } from './characteristic.service'
 
-@Controller('сharacteristic')
+@Controller('characteristic')
 export class СharacteristicController {
 	constructor(private readonly сharacteristicService: СharacteristicService) {}
 
@@ -30,7 +30,7 @@ export class СharacteristicController {
 	@Authorization(ERoleNames.ADMIN)
 	@Put('/:id')
 	async updateCharacteristic(@Param() param: IdParamDto, @Body() dto: UpdateCharacteristicDto) {
-		return await this.сharacteristicService.updateCharacteristic({...param, ...dto})
+		return await this.сharacteristicService.updateCharacteristic({ ...param, ...dto })
 	}
 
 	@Authorization(ERoleNames.ADMIN)
@@ -42,13 +42,13 @@ export class СharacteristicController {
 	@Authorization(ERoleNames.ADMIN)
 	@Post('value')
 	async createCharacteristicValue(@Body() dto: CreateCharacteristicValueDto) {
-		return await this.сharacteristicService.createCharacteristicValue(dto);
+		return await this.сharacteristicService.createCharacteristicValue(dto)
 	}
 
 	@Authorization(ERoleNames.ADMIN)
 	@Put('value/:id')
 	async updateCharacteristicValue(@Param() param: IdParamDto, @Body() dto: UpdateCharacteristicValueDto) {
-		return await this.сharacteristicService.updateCharacteristicValue({...param, ...dto});
+		return await this.сharacteristicService.updateCharacteristicValue({ ...param, ...dto })
 	}
 
 	@Authorization(ERoleNames.ADMIN)

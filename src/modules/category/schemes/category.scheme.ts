@@ -1,5 +1,5 @@
 import { Product } from 'src/modules/product/schemes/product.scheme'
-import { Characteristic } from 'src/modules/сharacteristic/schemes/сharacteristic.scheme'
+import { Characteristic } from 'src/modules/сharacteristic/schemes/characteristic.scheme'
 import {
 	Column,
 	Entity,

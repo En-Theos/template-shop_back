@@ -106,7 +106,7 @@ export class ProductService {
 			...dto
 		})
 
-		const createdProduct = await this.productsRepository.save(newProduct)
+		const createdProduct = await this.productsRepository.save(newProduct, { reload: false })
 
 		return await this.productsRepository.findOne({
 			where: { id: createdProduct.id },
@@ -130,7 +130,7 @@ export class ProductService {
 			}
 		}
 
-		await this.productsRepository.save({ ...existingProduct, ...dto })
+		await this.productsRepository.save({ ...existingProduct, ...dto }, { reload: false })
 
 		return await this.productsRepository.findOne({
 			where: { id: dto.id },

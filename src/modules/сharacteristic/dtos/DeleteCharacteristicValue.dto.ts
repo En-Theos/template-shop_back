@@ -6,5 +6,5 @@ export class DeleteCharacteristicValueDto {
     @IsArray({ message: 'Список ID значень характеристик має бути масивом' })
     @IsInt({ each: true, message: 'ID значень характеристик мають бути цілими числами' })
     @Type(() => Number)
-    сharacteristicValueIds: number[]
+    characteristicValueIds: number[]
 }

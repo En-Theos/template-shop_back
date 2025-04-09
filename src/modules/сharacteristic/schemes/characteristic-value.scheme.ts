@@ -8,7 +8,7 @@ import {
 	PrimaryGeneratedColumn
 } from 'typeorm'
 
-import { Characteristic } from './сharacteristic.scheme'
+import { Characteristic } from './characteristic.scheme'
 
 @Entity({ name: 'characteristic_values' })
 export class CharacteristicValue {
@@ -18,7 +18,7 @@ export class CharacteristicValue {
 	@Column({ type: 'varchar', length: 255 })
 	name: string
 
-	@ManyToOne(() => Characteristic, characteristic => characteristic.values)
+	@ManyToOne(() => Characteristic, characteristic => characteristic.values, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'characteristic_id' })
 	characteristic: Characteristic
 

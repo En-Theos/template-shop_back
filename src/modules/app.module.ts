@@ -16,7 +16,7 @@ import { ShoppingCartModule } from './shopping-cart/shopping-cart.module'
 import { TagModule } from './tag/tag.module'
 import { TokenModule } from './token/token.module'
 import { UserModule } from './user/user.module'
-import { СharacteristicModule } from './сharacteristic/сharacteristic.module'
+import { СharacteristicModule } from './сharacteristic/characteristic.module'
 
 @Module({
 	imports: [

@@ -3,7 +3,7 @@ import { Order } from 'src/modules/order/schemes/order.scheme'
 import { Review } from 'src/modules/review/schemes/review.scheme'
 import { Tag } from 'src/modules/tag/schemes/tag.scheme'
 import { User } from 'src/modules/user/schemes/user.scheme'
-import { CharacteristicValue } from 'src/modules/сharacteristic/schemes/сharacteristic-value.scheme'
+import { CharacteristicValue } from 'src/modules/сharacteristic/schemes/characteristic-value.scheme'
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 import { ProductImage } from './product-image.scheme'

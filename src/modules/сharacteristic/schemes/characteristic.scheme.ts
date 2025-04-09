@@ -1,14 +1,7 @@
 import { Category } from 'src/modules/category/schemes/category.scheme'
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
-	PrimaryGeneratedColumn
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
-import { CharacteristicValue } from './сharacteristic-value.scheme'
+import { CharacteristicValue } from './characteristic-value.scheme'
 
 @Entity({ name: 'characteristics' })
 export class Characteristic {
@@ -18,16 +11,13 @@ export class Characteristic {
 	@Column({ type: 'varchar', length: 255 })
 	name: string
 
-	@Column({ type: 'varchar', length: 255 })
+	@Column({ type: 'varchar', length: 255, nullable: true })
 	group: string
 
 	@ManyToOne(() => Category, category => category.characteristics)
 	@JoinColumn({ name: 'category_id' })
-	category: Category
+	category: Category | null
 
-	@OneToMany(
-		() => CharacteristicValue,
-		characteristicValue => characteristicValue.characteristic
-	)
+	@OneToMany(() => CharacteristicValue, characteristicValue => characteristicValue.characteristic)
 	values: CharacteristicValue[]
 }
