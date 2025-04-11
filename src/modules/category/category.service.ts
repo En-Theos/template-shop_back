@@ -1,13 +1,13 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { IdParamDto } from 'src/dtos/IdParam.dto'
 import { In, IsNull, Repository } from 'typeorm'
 
-import { ChangeParentCategoryDto } from './dtos/ChangeParentCategory.dto'
+import { ChangeParentCategoryDtoMultiple } from './dtos/ChangeParentCategory.dto'
 import { CreateCategoryDto } from './dtos/CreateCategory.dto'
 import { DeleteProductDto } from './dtos/DeleteCategory.dto'
 import { UpdateCategoryDto } from './dtos/UpdateCategory.dto'
 import { Category } from './schemes/category.scheme'
-import { IdParamDto } from 'src/dtos/IdParam.dto'
 
 @Injectable()
 export class CategoryService {
@@ -72,14 +72,14 @@ export class CategoryService {
 		await this.categoryRepository.delete({ id: In(query.categoryIds) })
 	}
 
-	async changeParentCategory(dto: ChangeParentCategoryDto[]) {
-		const updateValues = dto
+	async changeParentCategory(dto: ChangeParentCategoryDtoMultiple) {
+		const updateValues = dto.changes
 			.map(({ categoryId, parentCategoryId }) => {
 				return `WHEN id = ${categoryId} THEN ${parentCategoryId || null}`
 			})
 			.join(' ')
 
-		const categoryIds = dto.map(({ categoryId }) => categoryId)
+		const categoryIds = dto.changes.map(({ categoryId }) => categoryId)
 
 		await this.categoryRepository
 			.createQueryBuilder()

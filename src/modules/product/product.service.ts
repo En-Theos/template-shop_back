@@ -3,16 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { IdParamDto } from 'src/dtos/IdParam.dto'
 import { In, Repository } from 'typeorm'
 
-import { ChangeParentProductDto } from './dtos/ChangeParentProduct.dto'
+import { ChangeParentProductDto, ChangeParentProductDtoMultiple } from './dtos/ChangeParentProduct.dto'
 import { CreateChildProductDto } from './dtos/CreateChildProduct.dto'
 import { CreateProductDto } from './dtos/CreateProduct.dto'
 import { DeleteProductDto } from './dtos/DeleteProduct.dto'
 import { GetManyProductsDto } from './dtos/GetManyProducts.dto'
 import { UpdateProductDto } from './dtos/UpdateProduct.dto'
-import { UpdateProductAvailabilityDto } from './dtos/UpdateProductAvailability.dto'
-import { UpdateProductCategoryDto } from './dtos/UpdateProductCategory.dto'
-import { UpdateProductCharacteristicsDto } from './dtos/UpdateProductCharacteristics.dto'
-import { UpdateProductTagsDto } from './dtos/UpdateProductTags.dto'
+import { UpdateProductAvailabilityDto, UpdateProductAvailabilityDtoMultiple } from './dtos/UpdateProductAvailability.dto'
+import { UpdateProductCategoryDto, UpdateProductCategoryDtoMultiple } from './dtos/UpdateProductCategory.dto'
+import { UpdateProductCharacteristicsDto, UpdateProductCharacteristicsDtoMultiple } from './dtos/UpdateProductCharacteristics.dto'
+import { UpdateProductTagsDto, UpdateProductTagsDtoMultiple } from './dtos/UpdateProductTags.dto'
 import { Product } from './schemes/product.scheme'
 
 @Injectable()
@@ -147,13 +147,13 @@ export class ProductService {
 		await this.productsRepository.delete({ id: In(query.productIds) })
 	}
 
-	async updateProductCharacteristics(dto: UpdateProductCharacteristicsDto[]) {
+	async updateProductCharacteristics(dto: UpdateProductCharacteristicsDtoMultiple) {
 		const queryRunner = this.productsRepository.manager.connection.createQueryRunner()
 		await queryRunner.connect()
 		await queryRunner.startTransaction()
 
 		try {
-			const productIds = dto.map(item => item.productId)
+			const productIds = dto.changes.map(item => item.productId)
 			await queryRunner.manager
 				.createQueryBuilder()
 				.delete()
@@ -161,7 +161,7 @@ export class ProductService {
 				.where('productsId IN (:...productIds)', { productIds })
 				.execute()
 
-			const insertValues = dto.flatMap(({ productId, characteristicValueIds }) =>
+			const insertValues = dto.changes.flatMap(({ productId, characteristicValueIds }) =>
 				characteristicValueIds.map(charId => ({ productsId: productId, characteristicValuesId: charId }))
 			)
 
@@ -183,13 +183,13 @@ export class ProductService {
 		}
 	}
 
-	async updateProductTags(dto: UpdateProductTagsDto[]) {
+	async updateProductTags(dto: UpdateProductTagsDtoMultiple) {
 		const queryRunner = this.productsRepository.manager.connection.createQueryRunner()
 		await queryRunner.connect()
 		await queryRunner.startTransaction()
 
 		try {
-			const productIds = dto.map(item => item.productId)
+			const productIds = dto.changes.map(item => item.productId)
 			await queryRunner.manager
 				.createQueryBuilder()
 				.delete()
@@ -197,7 +197,7 @@ export class ProductService {
 				.where('productsId IN (:...productIds)', { productIds })
 				.execute()
 
-			const insertValues = dto.flatMap(({ productId, tagIds }) =>
+			const insertValues = dto.changes.flatMap(({ productId, tagIds }) =>
 				tagIds.map(tagId => ({ productsId: productId, tagsId: tagId }))
 			)
 
@@ -219,14 +219,14 @@ export class ProductService {
 		}
 	}
 
-	async changeParentProduct(dto: ChangeParentProductDto[]) {
-		const updateValues = dto
+	async changeParentProduct(dto: ChangeParentProductDtoMultiple) {
+		const updateValues = dto.changes
 			.map(({ productId, parentProductId }) => {
 				return `WHEN id = ${productId} THEN ${parentProductId || null}`
 			})
 			.join(' ')
 
-		const productIds = dto.map(({ productId }) => productId)
+		const productIds = dto.changes.map(({ productId }) => productId)
 
 		await this.productsRepository
 			.createQueryBuilder()
@@ -287,14 +287,14 @@ export class ProductService {
 		}
 	}
 
-	async updateProductAvailability(dto: UpdateProductAvailabilityDto[]) {
-		const updateValues = dto
+	async updateProductAvailability(dto: UpdateProductAvailabilityDtoMultiple) {
+		const updateValues = dto.changes
 			.map(({ productId, availability }) => {
 				return `WHEN id = ${productId} THEN ${availability}`
 			})
 			.join(' ')
 
-		const productIds = dto.map(({ productId }) => productId)
+		const productIds = dto.changes.map(({ productId }) => productId)
 
 		await this.productsRepository
 			.createQueryBuilder()
@@ -306,14 +306,14 @@ export class ProductService {
 			.execute()
 	}
 
-	async updateProductCategory(dto: UpdateProductCategoryDto[]) {
-		const updateValues = dto
+	async updateProductCategory(dto: UpdateProductCategoryDtoMultiple) {
+		const updateValues = dto.changes
 			.map(({ productId, categoryId }) => {
 				return `WHEN id = ${productId} THEN ${categoryId}`
 			})
 			.join(' ')
 
-		const productIds = dto.map(({ productId }) => productId)
+		const productIds = dto.changes.map(({ productId }) => productId)
 
 		await this.productsRepository
 			.createQueryBuilder()

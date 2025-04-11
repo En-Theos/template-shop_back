@@ -8,7 +8,7 @@ import { DeleteTagsDto } from './dtos/DeleteTags.dto'
 import { UpdateTagDto } from './dtos/UpdateTag.dto'
 import { TagService } from './tag.service'
 
-@Controller('tag')
+@Controller('tags')
 export class TagController {
 	constructor(private readonly tagService: TagService) {}
 

@@ -12,7 +12,7 @@ import { UpdateCharacteristicDto } from './dtos/UpdateCharacteristic.dto'
 import { UpdateCharacteristicValueDto } from './dtos/UpdateCharacteristicValue.dto'
 import { СharacteristicService } from './characteristic.service'
 
-@Controller('characteristic')
+@Controller('characteristics')
 export class СharacteristicController {
 	constructor(private readonly сharacteristicService: СharacteristicService) {}
 
