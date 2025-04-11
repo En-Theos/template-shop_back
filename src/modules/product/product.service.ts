@@ -31,7 +31,7 @@ export class ProductService {
 		// Фільтрація за категорією
 		if (dto.categoryId) {
 			query.andWhere('products.category_id = :categoryId', { categoryId: dto.categoryId })
-		} else if (dto.categoryId) {
+		} else {
 			query.andWhere('products.category_id IS NULL')
 		}
 

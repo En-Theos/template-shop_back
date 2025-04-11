@@ -6,11 +6,11 @@ export class Tag {
 	@PrimaryGeneratedColumn()
 	id: number
 
-	@Column({ type: 'varchar', length: 100, unique: true })
+	@Column({ type: 'varchar', length: 255 })
 	type: string
 
 	@Column({ type: 'varchar', length: 255 })
-	name: string
+	label: string
 
 	@ManyToMany(() => Product, product => product.tags)
 	products: Product[]

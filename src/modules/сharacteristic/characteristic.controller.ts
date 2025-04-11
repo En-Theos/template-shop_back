@@ -35,8 +35,8 @@ export class СharacteristicController {
 
 	@Authorization(ERoleNames.ADMIN)
 	@Delete('/')
-	async deleteCharacteristic(@Query() query: DeleteCharacteristicDto) {
-		return await this.сharacteristicService.deleteCharacteristic(query)
+	async deleteCharacteristics(@Query() query: DeleteCharacteristicDto) {
+		return await this.сharacteristicService.deleteCharacteristics(query)
 	}
 
 	@Authorization(ERoleNames.ADMIN)

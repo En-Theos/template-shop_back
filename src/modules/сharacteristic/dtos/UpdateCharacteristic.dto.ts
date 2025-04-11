@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
+import { IsBoolean, IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
 
 export class UpdateCharacteristicDto {
 	@IsString({ message: 'Назва характеристики має бути рядком' })
@@ -10,6 +10,10 @@ export class UpdateCharacteristicDto {
 	@MaxLength(255, { message: 'Група не може перевищувати 255 символів' })
 	@IsOptional()
 	group?: string
+
+	@IsBoolean()
+	@IsOptional()
+	isVariation?: boolean
 
 	@IsInt({ message: 'ID категорії має бути цілим числом' })
 	@IsOptional()

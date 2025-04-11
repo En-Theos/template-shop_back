@@ -80,7 +80,7 @@ export class СharacteristicService {
 		})
 	}
 
-	async deleteCharacteristic(query: DeleteCharacteristicDto) {
+	async deleteCharacteristics(query: DeleteCharacteristicDto) {
 		await this.characteristicsRepository.delete({ id: In(query.characteristicIds) })
 	}
 

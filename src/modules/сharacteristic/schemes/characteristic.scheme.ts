@@ -14,6 +14,9 @@ export class Characteristic {
 	@Column({ type: 'varchar', length: 255, nullable: true })
 	group: string
 
+	@Column({ type: 'boolean', default: false, name: "is_variation" })
+	isVariation: boolean
+
 	@ManyToOne(() => Category, category => category.characteristics)
 	@JoinColumn({ name: 'category_id' })
 	category: Category | null
