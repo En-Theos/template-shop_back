@@ -1,18 +1,18 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { IdParamDto } from 'src/dtos/IdParam.dto'
-import { In, Repository } from 'typeorm'
+import { EntityManager, In, Repository } from 'typeorm'
 
-import { ChangeParentProductDto, ChangeParentProductDtoMultiple } from './dtos/ChangeParentProduct.dto'
+import { ChangeParentProductDtoMultiple } from './dtos/ChangeParentProduct.dto'
 import { CreateChildProductDto } from './dtos/CreateChildProduct.dto'
 import { CreateProductDto } from './dtos/CreateProduct.dto'
 import { DeleteProductDto } from './dtos/DeleteProduct.dto'
 import { GetManyProductsDto } from './dtos/GetManyProducts.dto'
 import { UpdateProductDto } from './dtos/UpdateProduct.dto'
-import { UpdateProductAvailabilityDto, UpdateProductAvailabilityDtoMultiple } from './dtos/UpdateProductAvailability.dto'
-import { UpdateProductCategoryDto, UpdateProductCategoryDtoMultiple } from './dtos/UpdateProductCategory.dto'
-import { UpdateProductCharacteristicsDto, UpdateProductCharacteristicsDtoMultiple } from './dtos/UpdateProductCharacteristics.dto'
-import { UpdateProductTagsDto, UpdateProductTagsDtoMultiple } from './dtos/UpdateProductTags.dto'
+import { UpdateProductAvailabilityDtoMultiple } from './dtos/UpdateProductAvailability.dto'
+import { UpdateProductCategoryDtoMultiple } from './dtos/UpdateProductCategory.dto'
+import { UpdateProductCharacteristicsDtoMultiple } from './dtos/UpdateProductCharacteristics.dto'
+import { UpdateProductTagsDtoMultiple } from './dtos/UpdateProductTags.dto'
 import { Product } from './schemes/product.scheme'
 
 @Injectable()
@@ -21,6 +21,13 @@ export class ProductService {
 		@InjectRepository(Product)
 		private readonly productsRepository: Repository<Product>
 	) {}
+
+	async checkExsistProduct(id: Product['id']) {
+		const existingProduct = await this.productsRepository.findOne({ where: { id } })
+		if (!existingProduct) throw new NotFoundException('Товар не знайдено')
+
+		return existingProduct
+	}
 
 	async getManyProducts(dto: GetManyProductsDto) {
 		const query = this.productsRepository.createQueryBuilder('products')
@@ -78,10 +85,16 @@ export class ProductService {
 		const limit = dto?.limit ?? 10
 		query.skip((page - 1) * limit).take(limit)
 
-		return query.getMany()
+		const [items, total] = await query.getManyAndCount()
+
+		return {
+			items,
+			total,
+			totalPages: Math.ceil(total / limit)
+		}
 	}
 
-	async getOneProduct(id: IdParamDto["id"]) {
+	async getOneProduct(id: IdParamDto['id']) {
 		const product = await this.productsRepository.findOne({
 			where: { id },
 			relations: {
@@ -89,8 +102,7 @@ export class ProductService {
 				parentProduct: true,
 				variations: true,
 				characteristics: true,
-				tags: true,
-				reviews: true
+				tags: true
 			}
 		})
 		if (!product) throw new NotFoundException('Товар не знайдено')
@@ -98,8 +110,8 @@ export class ProductService {
 	}
 
 	async createProduct(dto: CreateProductDto) {
-		const exsistProduct = await this.productsRepository.findOne({ where: { sku: dto.sku } })
-		if (exsistProduct) throw new ConflictException('Товар з таким артикулом уже існує')
+		const existingProduct = await this.productsRepository.findOne({ where: { sku: dto.sku } })
+		if (existingProduct) throw new ConflictException('Товар з таким артикулом уже існує')
 
 		const newProduct = this.productsRepository.create({
 			parentProduct: dto?.parentProductId ? { id: dto.parentProductId } : null,
@@ -130,7 +142,7 @@ export class ProductService {
 			}
 		}
 
-		await this.productsRepository.save({ ...existingProduct, ...dto }, { reload: false })
+		await this.productsRepository.save({ ...existingProduct, ...dto })
 
 		return await this.productsRepository.findOne({
 			where: { id: dto.id },
@@ -141,6 +153,20 @@ export class ProductService {
 				reviews: true
 			}
 		})
+	}
+
+	async updateRating(productRatings: { productId: Product['id']; rating: Product['rating'] }[], manager?: EntityManager) {
+		const updateValues = productRatings.map(({ productId, rating }) => `WHEN ${productId} THEN ${rating}`).join(' ')
+
+		// 6. Масове оновлення товарів
+		await (manager?.getRepository(Product) || this.productsRepository)
+			.createQueryBuilder()
+			.update(Product)
+			.set({
+				rating: () => `CASE id ${updateValues} ELSE rating END`
+			})
+			.where('id IN (:...productIds)', { productIds: productRatings.map(item => item.productId) })
+			.execute()
 	}
 
 	async deleteProduct(query: DeleteProductDto) {

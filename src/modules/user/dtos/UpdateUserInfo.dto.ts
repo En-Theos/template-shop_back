@@ -1,25 +1,22 @@
 import { IsEmail, IsOptional, IsPhoneNumber, IsString } from 'class-validator'
 
-import { User } from '../schemes/user.scheme'
-
 export class UpdateUserInfoDto {
 	@IsString({ message: "Ім'я має бути рядком." })
-	@IsOptional()
-	firstName: User['firstName']
+	firstName: string
 
 	@IsString({ message: 'Прізвище має бути рядком.' })
 	@IsOptional()
-	lastName: User['lastName']
+	lastName?: string
 
 	@IsString({ message: 'По батькові має бути рядком.' })
 	@IsOptional()
-	middleName: User['middleName']
+	middleName?: string
 
 	@IsString({ message: 'Email має бути рядком.' })
 	@IsEmail({}, { message: 'Неправильний формат email.' })
-	email: User['email']
+	email: string
 
 	@IsPhoneNumber('UA', { message: 'Неправильний формат телефону' })
 	@IsOptional()
-	phone: User['phone']
+	phone?: string
 }

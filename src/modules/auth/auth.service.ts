@@ -1,10 +1,4 @@
-import {
-	BadRequestException,
-	ConflictException,
-	Injectable,
-	NotFoundException,
-	UnauthorizedException
-} from '@nestjs/common'
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ERoleNames } from 'src/interfaces/ERoleNames'
 import { ETokenType } from 'src/interfaces/ETokenType'
@@ -44,7 +38,7 @@ export class AuthService {
 
 		const publicUser = new UserEntity(
 			await this.usersRepository.save({
-				name: dto.name,
+				firstName: dto.firstName,
 				email: dto.email,
 				password: hashPassword,
 				role: ERoleNames.USER
@@ -78,12 +72,7 @@ export class AuthService {
 			throw new UnauthorizedException('Неправильний логін чи пароль')
 		}
 
-		if (
-			!(await UserEntity.validatePassword(
-				dto.password,
-				userFromDB.password
-			))
-		) {
+		if (!(await UserEntity.validatePassword(dto.password, userFromDB.password))) {
 			throw new UnauthorizedException('Неправильний логін чи пароль')
 		}
 
@@ -112,8 +101,7 @@ export class AuthService {
 			throw new UnauthorizedException('Користувач не авторизований')
 		}
 
-		const userFromToken =
-			await this.tokenService.validateRefreshToken(refresh_token)
+		const userFromToken = await this.tokenService.validateRefreshToken(refresh_token)
 		const userFromDB = await this.usersRepository.findOneBy({
 			id: userFromToken.id
 		})
@@ -140,8 +128,7 @@ export class AuthService {
 	}
 
 	async forgotPassword(dto: ForgotPasswordDto) {
-		const { token, expiresIn } =
-			this.tokenService.generateForgotPasswordToken()
+		const { token, expiresIn } = this.tokenService.generateForgotPasswordToken()
 
 		const user = await this.usersRepository.findOne({
 			where: { email: dto.email },
@@ -166,9 +153,7 @@ export class AuthService {
 
 			this.usersRepository.save(userEntity.getUser())
 		} else {
-			throw new NotFoundException(
-				'Користувача з таким email не знайдено.'
-			)
+			throw new NotFoundException('Користувача з таким email не знайдено.')
 		}
 	}
 
@@ -189,14 +174,10 @@ export class AuthService {
 				this.tokenRepository.remove(existToken)
 				this.usersRepository.save(user)
 			} else {
-				throw new BadRequestException(
-					'Токен для скидування паролю недійсний або прострочений.'
-				)
+				throw new BadRequestException('Токен для скидування паролю недійсний або прострочений.')
 			}
 		} else {
-			throw new NotFoundException(
-				'Такий токен для скидування паролю не знайдено.'
-			)
+			throw new NotFoundException('Такий токен для скидування паролю не знайдено.')
 		}
 	}
 }

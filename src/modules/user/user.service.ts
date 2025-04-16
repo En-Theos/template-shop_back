@@ -13,31 +13,22 @@ export class UserService {
 		private readonly usersRepository: Repository<User>
 	) {}
 
-	async getUserInfo(userId: IPublicUser['id']) {
+	async checkExsistUser(id: User['id']) {
 		const userFromDB = await this.usersRepository.findOne({
-			where: { id: userId },
-			select: ['id','firstName','lastName','middleName','email','phone','role']
+			where: { id },
+			select: ['id', 'firstName', 'lastName', 'middleName', 'email', 'phone', 'role']
 		})
-
-		if (!userFromDB) {
-			throw new NotFoundException('Такого користувача не знайдено')
-		}
+		if (!userFromDB) throw new NotFoundException('Такого користувача не знайдено')
 
 		return userFromDB
 	}
 
-	async updateUserInfo({
-		userId,
-		newData
-	}: {
-		userId: User['id']
-		newData: UpdateUserInfoDto
-	}): Promise<IPublicUser> {
-		const userFromDB = await this.usersRepository.findOneBy({ id: userId })
+	async getUserInfo(userId: IPublicUser['id']) {
+		return await this.checkExsistUser(userId)
+	}
 
-		if (!userFromDB) {
-			throw new NotFoundException('Такого користувача не знайдено')
-		}
+	async updateUserInfo({ userId, newData }: { userId: User['id']; newData: UpdateUserInfoDto }): Promise<IPublicUser> {
+		const userFromDB = await this.checkExsistUser(userId)
 
 		const userEntity = new UserEntity(userFromDB).updateInfo(newData)
 
@@ -48,7 +39,7 @@ export class UserService {
 
 	async getAllUsersInfo() {
 		return await this.usersRepository.find({
-			select: ['id','firstName','lastName','middleName','email','phone','role'],
+			select: ['id', 'firstName', 'lastName', 'middleName', 'email', 'phone', 'role']
 		})
 	}
 }

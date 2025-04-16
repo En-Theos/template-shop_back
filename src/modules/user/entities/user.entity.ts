@@ -13,7 +13,7 @@ export type ITokenUser = Pick<User, 'id' | 'role'>
 
 export class UserEntity {
 	private id: number
-	private firstName: string | null
+	private firstName: string
 	private lastName: string | null
 	private middleName: string | null
 	private email: string
@@ -90,12 +90,12 @@ export class UserEntity {
 		}
 	}
 
-	public updateInfo(data: Pick<User, 'firstName' | 'lastName' | 'middleName' | 'email' | 'phone'>): this {
-		this.firstName = data.firstName
-		this.lastName = data.lastName
-		this.middleName = data.middleName
-		this.email = data.email
-		this.phone = data.phone
+	public updateInfo(data: Partial<User>): this {
+		this.firstName = data.firstName || this.firstName
+		this.lastName = data.lastName || this.lastName
+		this.middleName = data.middleName || this.middleName
+		this.email = data.email || this.email
+		this.phone = data.phone || this.phone
 
 		return this
 	}

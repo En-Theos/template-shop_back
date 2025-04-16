@@ -9,8 +9,7 @@ import { IsPasswordsEqual } from 'src/decorators/is-passwords-equal.decorator'
 
 export class RegistrationDto {
 	@IsString({ message: "Ім'я має бути рядком." })
-	@IsOptional()
-	name?: string
+	firstName: string
 
 	@IsString({ message: 'Email має бути рядком.' })
 	@IsEmail({}, { message: 'Неправильний формат email.' })

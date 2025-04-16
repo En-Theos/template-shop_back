@@ -9,6 +9,7 @@ import { Product } from './schemes/product.scheme'
 @Module({
 	imports: [TypeOrmModule.forFeature([Product, ProductImage])],
 	controllers: [ProductController],
-	providers: [ProductService]
+	providers: [ProductService],
+	exports: [ProductService]
 })
 export class ProductModule {}
