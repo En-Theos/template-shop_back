@@ -3,9 +3,9 @@ import { FastifyRequest } from 'fastify'
 import { Authorization } from 'src/decorators/auth.decorator'
 import { ERoleNames } from 'src/interfaces/ERoleNames'
 
-import { UpdateUserInfoDto } from './dtos/UpdateUserInfo.dto'
-import { IPublicUser, ITokenUser } from './entities/user.entity'
-import { UserService } from './user.service'
+import { UpdateUserInfoDto } from '../dtos/user/UpdateUserInfo.dto'
+import { IPublicUser, ITokenUser } from '../entities/user.entity'
+import { UserService } from '../services/user.service'
 
 @Controller('users')
 export class UserController {

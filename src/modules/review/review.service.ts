@@ -134,7 +134,13 @@ export class ReviewService {
 			// 1. Отримуємо відгуки, що будуть видалені
 			const reviewsToDelete = await manager.getRepository(Review).find({
 				where: { id: In(query.reviewIds) },
-				relations: { product: true }
+				relations: { product: true },
+				select: {
+					id: true,
+					product: {
+						id: true
+					}
+				}
 			})
 
 			if (reviewsToDelete.length === 0) return
