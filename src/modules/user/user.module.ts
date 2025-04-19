@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
+import { ProductModule } from '../product/product.module'
+
 import { FavoriteController } from './controllers/favorite.controller'
 import { RevisedController } from './controllers/revised.controller'
 import { ShoppingCartController } from './controllers/shopping-cart.controller'
@@ -14,7 +16,7 @@ import { ShoppingCartService } from './services/shopping-cart.service'
 import { UserService } from './services/user.service'
 
 @Module({
-	imports: [TypeOrmModule.forFeature([User, Token, ShoppingCart])],
+	imports: [TypeOrmModule.forFeature([User, Token, ShoppingCart]), ProductModule],
 	controllers: [UserController, ShoppingCartController, RevisedController, FavoriteController],
 	providers: [UserService, ShoppingCartService, RevisedService, FavoriteService],
 	exports: [TypeOrmModule]

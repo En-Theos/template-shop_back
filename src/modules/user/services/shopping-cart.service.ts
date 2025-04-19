@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { DataSource, In, Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 
 import { AddProductMyShoppingCartDto } from '../dtos/shopping-cart/AddProductMyShoppingCart.dto'
 import { DeleteProductMyShoppingCartDto } from '../dtos/shopping-cart/DeleteProductMyShoppingCart.dto'
@@ -16,8 +16,6 @@ export class ShoppingCartService {
 		private readonly shoppingCartRepository: Repository<ShoppingCart>,
 
 		private readonly userService: UserService,
-
-		private readonly dataSource: DataSource
 	) {}
 
 	async getMyShoppingCart(user: ITokenUser) {
