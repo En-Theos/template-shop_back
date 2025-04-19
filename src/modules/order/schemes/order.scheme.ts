@@ -2,15 +2,7 @@ import { EDeliveryStatus } from 'src/interfaces/EDeliveryStatus'
 import { EOrderStatus } from 'src/interfaces/EOrderStatus'
 import { Product } from 'src/modules/product/schemes/product.scheme'
 import { User } from 'src/modules/user/schemes/user.scheme'
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	JoinTable,
-	ManyToMany,
-	ManyToOne,
-	PrimaryGeneratedColumn
-} from 'typeorm'
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity({ name: 'orders' })
 export class Order {
@@ -52,4 +44,10 @@ export class Order {
 
 	@Column({ type: 'json', name: 'delivery_info' })
 	deliveryInfo: string
+
+	@CreateDateColumn({ type: 'timestamp', select: false })
+	createdAt: Date
+
+	@UpdateDateColumn({ type: 'timestamp', select: false })
+	updatedAt: Date
 }

@@ -4,10 +4,11 @@ import { Order } from 'src/modules/order/schemes/order.scheme'
 import { Product } from 'src/modules/product/schemes/product.scheme'
 import { Review } from 'src/modules/review/schemes/review.scheme'
 
+import { ShoppingCart } from '../schemes/shopping-cart.scheme'
 import { Token } from '../schemes/token.scheme'
 import { User } from '../schemes/user.scheme'
 
-export type IPublicUser = Omit<User, 'password'>
+export type IPublicUser = Omit<User, 'password' | 'createdAt' | 'updatedAt'>
 
 export type ITokenUser = Pick<User, 'id' | 'role'>
 
@@ -24,7 +25,7 @@ export class UserEntity {
 	private favorites: Product[]
 	private revised: Product[]
 	private reviews: Review[]
-	private shoppingCart: Product[]
+	private shoppingCart: ShoppingCart[]
 	private orders: Order[]
 
 	constructor(userRepo: User) {
@@ -39,7 +40,7 @@ export class UserEntity {
 		this.tokens = userRepo.tokens
 		this.favorites = userRepo.favorites
 		this.revised = userRepo.revised
-		this.reviews = userRepo.reviews
+		this.reviews = userRepo.reviews 
 		this.shoppingCart = userRepo.shoppingCart
 		this.orders = userRepo.orders
 	}
@@ -62,7 +63,7 @@ export class UserEntity {
 		}
 	}
 
-	public getUser(): User {
+	public getUser() {
 		return {
 			id: this.id,
 			firstName: this.firstName,

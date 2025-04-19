@@ -4,13 +4,16 @@ import { Product } from 'src/modules/product/schemes/product.scheme'
 import { Review } from 'src/modules/review/schemes/review.scheme'
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	JoinTable,
 	ManyToMany,
 	OneToMany,
-	PrimaryGeneratedColumn
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
 } from 'typeorm'
 
+import { ShoppingCart } from './shopping-cart.scheme'
 import { Token } from './token.scheme'
 
 @Entity({ name: 'users' })
@@ -58,10 +61,15 @@ export class User {
 	@OneToMany(() => Review, review => review.user)
 	reviews: Review[]
 
-	@ManyToMany(() => Product)
-	@JoinTable({ name: 'shopping_cart' })
-	shoppingCart: Product[]
+	@OneToMany(() => ShoppingCart, shoppingCart => shoppingCart.user)
+	shoppingCart: ShoppingCart[]
 
 	@OneToMany(() => Order, order => order.user)
 	orders: Order[]
+
+	@CreateDateColumn({ type: 'timestamp', select: false })
+	createdAt: Date
+
+	@UpdateDateColumn({ type: 'timestamp', select: false })
+	updatedAt: Date
 }

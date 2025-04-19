@@ -4,9 +4,21 @@ import { Review } from 'src/modules/review/schemes/review.scheme'
 import { Tag } from 'src/modules/tag/schemes/tag.scheme'
 import { User } from 'src/modules/user/schemes/user.scheme'
 import { CharacteristicValue } from 'src/modules/сharacteristic/schemes/characteristic-value.scheme'
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm'
 
 import { ProductImage } from './product-image.scheme'
+import { ShoppingCart } from 'src/modules/user/schemes/shopping-cart.scheme'
 
 @Entity({ name: 'products' })
 export class Product {
@@ -56,8 +68,8 @@ export class Product {
 	@OneToMany(() => Review, review => review.product)
 	reviews: Review[]
 
-	@ManyToMany(() => User)
-	shoppingCart: User[]
+	@OneToMany(() => ShoppingCart, shoppingCart => shoppingCart.product)
+	shoppingCart: ShoppingCart[];
 
 	@Column({ type: 'int', unsigned: true, default: 0 })
 	availability: number
@@ -78,4 +90,10 @@ export class Product {
 
 	@ManyToMany(() => Order)
 	orders: Order[]
+
+	@CreateDateColumn({ type: 'timestamp', select: false })
+	createdAt: Date
+
+	@UpdateDateColumn({ type: 'timestamp', select: false })
+	updatedAt: Date
 }

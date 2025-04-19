@@ -2,11 +2,13 @@ import { Product } from 'src/modules/product/schemes/product.scheme'
 import { Characteristic } from 'src/modules/сharacteristic/schemes/characteristic.scheme'
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	JoinColumn,
 	ManyToOne,
 	OneToMany,
-	PrimaryGeneratedColumn
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
 } from 'typeorm'
 
 @Entity({ name: 'categories' })
@@ -31,4 +33,10 @@ export class Category {
 
 	@OneToMany(() => Characteristic, characteristic => characteristic.category)
 	characteristics: Characteristic[]
+
+	@CreateDateColumn({ type: 'timestamp', select: false })
+	createdAt: Date
+
+	@UpdateDateColumn({ type: 'timestamp', select: false })
+	updatedAt: Date
 }

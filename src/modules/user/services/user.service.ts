@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { FindOptionsRelations, Repository } from 'typeorm'
 
 import { UpdateUserInfoDto } from '../dtos/user/UpdateUserInfo.dto'
 import { IPublicUser, UserEntity } from '../entities/user.entity'
@@ -13,10 +13,11 @@ export class UserService {
 		private readonly usersRepository: Repository<User>
 	) {}
 
-	async checkExsistUser(id: User['id']) {
+	async checkExsistUser(id: User['id'], relations?: FindOptionsRelations<User>) {
 		const userFromDB = await this.usersRepository.findOne({
 			where: { id },
-			select: ['id', 'firstName', 'lastName', 'middleName', 'email', 'phone', 'role']
+			select: ['id', 'firstName', 'lastName', 'middleName', 'email', 'phone', 'role'],
+			relations
 		})
 		if (!userFromDB) throw new NotFoundException('Такого користувача не знайдено')
 

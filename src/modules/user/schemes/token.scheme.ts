@@ -1,11 +1,5 @@
 import { ETokenType } from 'src/interfaces/ETokenType'
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	PrimaryGeneratedColumn
-} from 'typeorm'
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 import { User } from './user.scheme'
 
@@ -30,4 +24,10 @@ export class Token {
 	@ManyToOne(() => User, user => user.tokens)
 	@JoinColumn({ name: 'user_id' })
 	user: User
+
+	@CreateDateColumn({ type: 'timestamp', select: false })
+	createdAt: Date
+
+	@UpdateDateColumn({ type: 'timestamp', select: false })
+	updatedAt: Date
 }
