@@ -15,6 +15,7 @@ import {
 
 import { ShoppingCart } from './shopping-cart.scheme'
 import { Token } from './token.scheme'
+import { Revised } from './revised.scheme'
 
 @Entity({ name: 'users' })
 export class User {
@@ -54,9 +55,8 @@ export class User {
 	@JoinTable({ name: 'favorites' })
 	favorites: Product[]
 
-	@ManyToMany(() => Product)
-	@JoinTable({ name: 'revised' })
-	revised: Product[]
+	@OneToMany(() => Revised, revised => revised.user)
+	revised: Revised[]
 
 	@OneToMany(() => Review, review => review.user)
 	reviews: Review[]

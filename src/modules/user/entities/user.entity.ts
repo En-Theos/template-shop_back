@@ -7,6 +7,7 @@ import { Review } from 'src/modules/review/schemes/review.scheme'
 import { ShoppingCart } from '../schemes/shopping-cart.scheme'
 import { Token } from '../schemes/token.scheme'
 import { User } from '../schemes/user.scheme'
+import { Revised } from '../schemes/revised.scheme'
 
 export type IPublicUser = Omit<User, 'password' | 'createdAt' | 'updatedAt'>
 
@@ -23,7 +24,7 @@ export class UserEntity {
 	private role: ERoleNames
 	private tokens: Token[]
 	private favorites: Product[]
-	private revised: Product[]
+	private revised: Revised[]
 	private reviews: Review[]
 	private shoppingCart: ShoppingCart[]
 	private orders: Order[]

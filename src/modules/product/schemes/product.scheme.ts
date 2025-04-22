@@ -19,6 +19,7 @@ import {
 
 import { ProductImage } from './product-image.scheme'
 import { ShoppingCart } from 'src/modules/user/schemes/shopping-cart.scheme'
+import { Revised } from 'src/modules/user/schemes/revised.scheme'
 
 @Entity({ name: 'products' })
 export class Product {
@@ -62,8 +63,8 @@ export class Product {
 	@ManyToMany(() => User)
 	favorites: User[]
 
-	@ManyToMany(() => User)
-	revised: User[]
+	@OneToMany(() => Revised, revised => revised.product)
+	revised: Revised[]
 
 	@OneToMany(() => Review, review => review.product)
 	reviews: Review[]
