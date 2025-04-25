@@ -21,7 +21,7 @@ export class Token {
 	@Column({ type: 'enum', enum: ETokenType })
 	type: ETokenType
 
-	@ManyToOne(() => User, user => user.tokens)
+	@ManyToOne(() => User, user => user.tokens, { onDelete: 'CASCADE', orphanedRowAction: "delete"})
 	@JoinColumn({ name: 'user_id' })
 	user: User
 

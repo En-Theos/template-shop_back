@@ -48,7 +48,7 @@ export class User {
 	@Column({ type: 'enum', enum: ERoleNames, default: ERoleNames.USER })
 	role: ERoleNames
 
-	@OneToMany(() => Token, token => token.user)
+	@OneToMany(() => Token, token => token.user, {cascade: ["insert"]})
 	tokens: Token[]
 
 	@ManyToMany(() => Product)

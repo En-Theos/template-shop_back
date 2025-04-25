@@ -1,8 +1,19 @@
 import { EDeliveryStatus } from 'src/interfaces/EDeliveryStatus'
 import { EOrderStatus } from 'src/interfaces/EOrderStatus'
+import { EPaymentType } from 'src/interfaces/EPaymentType'
 import { Product } from 'src/modules/product/schemes/product.scheme'
 import { User } from 'src/modules/user/schemes/user.scheme'
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm'
 
 @Entity({ name: 'orders' })
 export class Order {
@@ -32,6 +43,14 @@ export class Order {
 		default: EDeliveryStatus.EXPECTS
 	})
 	deliveryStatus: EDeliveryStatus
+
+	@Column({
+		name: 'payment_type',
+		type: 'enum',
+		enum: EPaymentType,
+		default: EPaymentType.UPON_RECEIPT
+	})
+	paymentType: EPaymentType
 
 	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
 	date: Date
