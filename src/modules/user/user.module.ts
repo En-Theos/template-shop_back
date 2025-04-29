@@ -20,6 +20,6 @@ import { UserService } from './services/user.service'
 	imports: [TypeOrmModule.forFeature([User, Token, ShoppingCart, Revised]), ProductModule],
 	controllers: [UserController, ShoppingCartController, RevisedController, FavoriteController],
 	providers: [UserService, ShoppingCartService, RevisedService, FavoriteService],
-	exports: [TypeOrmModule]
+	exports: [TypeOrmModule, UserService]
 })
 export class UserModule {}

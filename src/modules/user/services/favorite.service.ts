@@ -22,17 +22,23 @@ export class FavoriteService {
 	) {}
 
 	async getMyFavorites(user: ITokenUser) {
-		const userDB = await this.userService.checkExsistUser(user.id, {
-			favorites: true
-		})
+		const userDB = await this.userService.getAndCheckUser(
+			{ id: user.id },
+			{
+				favorites: true
+			}
+		)
 
 		return userDB.favorites
 	}
 
 	async addProductMyFavorites(dto: { userId: ITokenUser['id'] } & AddProductMyFavoritesDto) {
-		const userDB = await this.userService.checkExsistUser(dto.userId, {
-			favorites: true
-		})
+		const userDB = await this.userService.getAndCheckUser(
+			{ id: dto.userId },
+			{
+				favorites: true
+			}
+		)
 
 		const existingProduct = await this.productService.checkExsistProduct(dto.productId)
 
@@ -42,12 +48,15 @@ export class FavoriteService {
 	}
 
 	async deleteProductMyFavorites(dto: { userId: ITokenUser['id'] } & DeleteProductMyFavoritesDto) {
-		const userDB = await this.userService.checkExsistUser(dto.userId, {
-			favorites: true
-		})
+		const userDB = await this.userService.getAndCheckUser(
+			{ id: dto.userId },
+			{
+				favorites: true
+			}
+		)
 
-        userDB.favorites = userDB.favorites.filter(item => !dto.productIds.includes(item.id))
+		userDB.favorites = userDB.favorites.filter(item => !dto.productIds.includes(item.id))
 
-        this.userRepository.save(userDB)
+		this.userRepository.save(userDB)
 	}
 }

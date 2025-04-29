@@ -1,5 +1,6 @@
 import { EDeliveryStatus } from 'src/interfaces/EDeliveryStatus'
 import { EOrderStatus } from 'src/interfaces/EOrderStatus'
+import { EPaymentStatus } from 'src/interfaces/EPaymentStatus'
 import { EPaymentType } from 'src/interfaces/EPaymentType'
 import { Product } from 'src/modules/product/schemes/product.scheme'
 import { User } from 'src/modules/user/schemes/user.scheme'
@@ -20,19 +21,46 @@ export class Order {
 	@PrimaryGeneratedColumn()
 	id: number
 
-	@ManyToMany(() => Product, product => product.orders)
-	@JoinTable({ name: 'product_orders' })
-	products: Product[]
+	@Column({ name: 'first_name', type: 'varchar', length: 50 })
+	firstName: string
+
+	@Column({ name: 'last_name', type: 'varchar', length: 50 })
+	lastName: string
+
+	@Column({ type: 'varchar', length: 255, nullable: true })
+	email: string
+
+	@Column({ type: 'varchar', length: 20 })
+	phone: string
+
+	@Column({ name: 'first_name_recipient', type: 'varchar', length: 50 })
+	firstNameRecipient: string
+
+	@Column({ name: 'last_name_recipient', type: 'varchar', length: 50 })
+	lastNameRecipient: string
+
+	@Column({name: 'email_recipient', type: 'varchar', length: 255, nullable: true })
+	emailRecipient: string
+
+	@Column({name: 'phone_recipient', type: 'varchar', length: 20 })
+	phoneRecipient: string
 
 	@ManyToOne(() => User, user => user.orders)
 	@JoinColumn({ name: 'user_id' })
-	user: User
+	user: User 
+
+	@Column({ type: 'varchar', name: 'delivery_addresses', length: 255 })
+	deliveryAddresses: string
+
+	@ManyToMany(() => Product, product => product.orders)
+	@JoinTable({ name: 'product_orders' })
+	products: Product[]
 
 	@Column({
 		name: 'order_status',
 		type: 'enum',
 		enum: EOrderStatus,
-		default: EOrderStatus.ACCEPTED
+		default: EOrderStatus.PROCESSING
 	})
 	orderStatus: EOrderStatus
 
@@ -45,24 +73,26 @@ export class Order {
 	deliveryStatus: EDeliveryStatus
 
 	@Column({
+		name: 'payment_status',
+		type: 'enum',
+		enum: EPaymentStatus,
+		default: EPaymentStatus.UNPAID
+	})
+	paymentStatus: EPaymentStatus
+
+	@Column({
 		name: 'payment_type',
 		type: 'enum',
 		enum: EPaymentType,
-		default: EPaymentType.UPON_RECEIPT
+		default: EPaymentType.ONLINE
 	})
 	paymentType: EPaymentType
 
-	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-	date: Date
-
-	@Column({ type: 'text', name: 'сustomer_comment' })
+	@Column({ type: 'varchar', name: 'сustomer_comment', length: 255, nullable: true })
 	сustomerComment: string
 
-	@Column({ type: 'text', name: 'manager_comment' })
+	@Column({ type: 'varchar', name: 'manager_comment', length: 255, nullable: true })
 	managerComment: string
-
-	@Column({ type: 'json', name: 'delivery_info' })
-	deliveryInfo: string
 
 	@CreateDateColumn({ type: 'timestamp', select: false })
 	createdAt: Date

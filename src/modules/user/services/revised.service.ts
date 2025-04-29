@@ -18,18 +18,19 @@ export class RevisedService {
 	) {}
 
 	async getMyRevised(user: ITokenUser) {
-		const userDB = await this.userService.checkExsistUser(user.id, {
-			revised: {
-				product: true
+		const userDB = await this.userService.getAndCheckUser(
+			{ id: user.id },
+			{
+				revised: {
+					product: true
+				}
 			}
-		})
+		)
 
 		return userDB.revised
 	}
 
 	async addProductMyRevised(dto: { userId: ITokenUser['id'] } & AddProductMyRevisedDto) {
-		await this.userService.checkExsistUser(dto.userId)
-
 		let products = await this.revisedRepository.find({
 			where: {
 				user: { id: dto.userId }

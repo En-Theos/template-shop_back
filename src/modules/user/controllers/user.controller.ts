@@ -12,8 +12,8 @@ export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Authorization(ERoleNames.USER, ERoleNames.ADMIN)
-	@Get('/self')
-	async userInfo(@Req() request: FastifyRequest): Promise<IPublicUser> {
+	@Get('self')
+	async getUserInfo(@Req() request: FastifyRequest): Promise<IPublicUser> {
 		const userFromToken = request.user as ITokenUser
 
 		return await this.userService.getUserInfo(userFromToken.id)
@@ -33,7 +33,7 @@ export class UserController {
 	}
 
 	@Authorization(ERoleNames.ADMIN)
-	@Get('/all')
+	@Get('all')
 	async allUsersInfo() {
 		return await this.userService.getAllUsersInfo()
 	}

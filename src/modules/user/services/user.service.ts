@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindOptionsRelations, Repository } from 'typeorm'
+import { FindOptionsRelations, FindOptionsWhere, Repository } from 'typeorm'
 
 import { UpdateUserInfoDto } from '../dtos/user/UpdateUserInfo.dto'
 import { IPublicUser, UserEntity } from '../entities/user.entity'
@@ -13,9 +13,9 @@ export class UserService {
 		private readonly usersRepository: Repository<User>
 	) {}
 
-	async checkExsistUser(id: User['id'], relations?: FindOptionsRelations<User>) {
+	async getAndCheckUser(where: FindOptionsWhere<User> | FindOptionsWhere<User>[], relations?: FindOptionsRelations<User>) {
 		const userFromDB = await this.usersRepository.findOne({
-			where: { id },
+			where,
 			select: ['id', 'firstName', 'lastName', 'middleName', 'email', 'phone', 'role'],
 			relations
 		})
@@ -25,11 +25,11 @@ export class UserService {
 	}
 
 	async getUserInfo(userId: IPublicUser['id']) {
-		return await this.checkExsistUser(userId)
+		return await this.getAndCheckUser({id: userId})
 	}
 
 	async updateUserInfo({ userId, newData }: { userId: User['id']; newData: UpdateUserInfoDto }): Promise<IPublicUser> {
-		const userFromDB = await this.checkExsistUser(userId)
+		const userFromDB = await this.getAndCheckUser({id: userId})
 
 		const userEntity = new UserEntity(userFromDB).updateInfo(newData)
 
